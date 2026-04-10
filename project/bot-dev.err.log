@@ -1,5 +1,0 @@
-INFO:     Started server process [23168]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-2026-04-11 01:23:50,299 | INFO | telegram.ext.Application | Application started
