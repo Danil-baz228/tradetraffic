@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Fintech Mini App</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="phone-screen">
+        <header class="profile-card">
+          <div class="profile-left">
+            <div class="avatar">
+              <div class="avatar-core"></div>
+            </div>
+            <div class="profile-copy">
+              <p class="eyebrow" id="username">@satoshi</p>
+              <p class="muted" id="user-subtitle">Premium trader</p>
+            </div>
+          </div>
+          <div class="profile-balance">
+            <p class="muted">Balance</p>
+            <p class="balance-value">$24,580.42</p>
+          </div>
+        </header>
+
+        <div class="tabs-row">
+          <button class="pair-pill">BTC/USDT</button>
+          <div class="stat-chip">96.4K</div>
+          <div class="stat-chip gain">+2.84%</div>
+          <div class="stat-chip loss">P/L +840</div>
+        </div>
+
+        <section class="trade-card">
+          <div class="chart-heading">
+            <div>
+              <p class="chart-label">BTC/USDT - 1H</p>
+              <h1 class="chart-price">73,131.0</h1>
+            </div>
+            <div class="chart-badge">LIVE</div>
+          </div>
+
+          <div class="chart-frame">
+            <svg id="candles" viewBox="0 0 320 220" preserveAspectRatio="none"></svg>
+            <svg id="volume" viewBox="0 0 320 58" preserveAspectRatio="none"></svg>
+          </div>
+
+          <div class="timeframe-row">
+            <button class="timeframe active">1H</button>
+            <button class="timeframe">4H</button>
+            <button class="timeframe">1D</button>
+          </div>
+
+          <div class="trade-summary">
+            ENTRY 95.8K&nbsp;&nbsp; TARGET 98.2K&nbsp;&nbsp; STOP 94.9K
+          </div>
+        </section>
+
+        <section class="actions-row">
+          <button class="action-card up-action" id="up-action">
+            <span class="action-title">UP</span>
+            <span class="action-meta">Long +12%</span>
+          </button>
+          <button class="action-card down-action" id="down-action">
+            <span class="action-title">DOWN</span>
+            <span class="action-meta">Short -8%</span>
+          </button>
+        </section>
+
+        <section class="content-panels" id="content-panels">
+          <article class="panel" data-panel="home">
+            <h2>Trading dashboard</h2>
+            <p>Open positions, last price and fast entry points live here.</p>
+          </article>
+          <article class="panel" data-panel="stats">
+            <h2>Stats</h2>
+            <p>ROI, P/L and weekly performance cards for the account.</p>
+          </article>
+          <article class="panel" data-panel="profile">
+            <h2>Profile</h2>
+            <p>User profile, allocation and recent activity summary.</p>
+          </article>
+          <article class="panel" data-panel="settings">
+            <h2>Settings</h2>
+            <p>Security, alerts and display preferences for the Mini App.</p>
+          </article>
+        </section>
+
+        <nav class="bottom-nav">
+          <button class="nav-item active" data-tab="home">
+            <span class="nav-icon nav-home"></span>
+            <span class="nav-label">HOME</span>
+          </button>
+          <button class="nav-item" data-tab="stats">
+            <span class="nav-icon nav-stats">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="nav-label">STATS</span>
+          </button>
+          <button class="nav-item" data-tab="profile">
+            <span class="nav-icon nav-profile"></span>
+            <span class="nav-label">PROFILE</span>
+          </button>
+          <button class="nav-item" data-tab="settings">
+            <span class="nav-icon nav-settings"></span>
+            <span class="nav-label">SET</span>
+          </button>
+        </nav>
+      </section>
+    </main>
+
+    <script src="/static/js/app.js"></script>
+  </body>
+</html>
