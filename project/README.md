@@ -1,56 +1,180 @@
-# Telegram Mini App Scaffold
+# Telegram Mini App — Trading Dashboard
 
-Python scaffold for a Telegram bot that:
+A Telegram bot that:
 
-1. asks the user to share a contact,
-2. stores the contact locally,
-3. sends a button that opens a Telegram Mini App,
-4. serves a fintech-style Mini App UI inspired by the design in `../design/`.
+1. Asks the user to share their contact (phone number)
+2. Stores the contact locally in `data/users.json`
+3. Sends an inline button that opens a **Telegram Mini App**
+4. Serves a fintech-style trading dashboard UI
 
-## Project Layout
+**Test bot:** [@test124Bot_bot](https://t.me/test124Bot_bot)
 
-- `app/main.py` starts both the web server and the Telegram bot.
-- `app/bot.py` handles `/start`, contact sharing, and the Mini App button.
-- `app/web.py` serves the Mini App.
-- `app/templates/index.html` is the Mini App markup.
-- `app/static/` contains styles and JavaScript.
-- `data/users.json` stores shared contacts locally.
+---
+
+## How It Works
+
+```
+User sends /start
+  └─> Bot asks for contact (phone number)
+        └─> User shares contact
+              └─> Bot saves contact to data/users.json
+                    └─> Bot sends "Open Mini App" button
+                          └─> Mini App opens in Telegram (FastAPI + HTML)
+```
+
+### Bot commands
+
+| Command  | Description                    |
+|----------|--------------------------------|
+| `/start` | Start the bot, ask for contact |
+| `/app`   | Re-open the Mini App button    |
+
+### Project structure
+
+```
+project/
+├── app/
+│   ├── main.py          # Entry point — starts bot + web server together
+│   ├── bot.py           # Telegram bot handlers
+│   ├── web.py           # FastAPI web server for the Mini App
+│   ├── config.py        # Settings loaded from .env
+│   ├── storage.py       # JSON-based user storage
+│   ├── templates/
+│   │   └── index.html   # Mini App HTML page
+│   └── static/          # CSS & JS for the Mini App
+├── data/
+│   └── users.json       # Stored contacts (auto-created)
+├── requirements.txt
+├── .env.example
+└── .env                 # Your local config (not committed)
+```
+
+---
+
+## Requirements
+
+- Python **3.11+**
+- A Telegram bot token from [@BotFather](https://t.me/BotFather)
+- A public HTTPS URL for the Mini App (tunnel required for local dev — see below)
+
+---
 
 ## Quick Start
 
-```bash
+### Windows
+
+```bat
 cd project
+
+:: Create and activate virtual environment
 python -m venv .venv
 .venv\Scripts\activate
+
+:: Install dependencies
 pip install -r requirements.txt
+
+:: Create .env from example
 copy .env.example .env
+```
+
+Edit `.env` and fill in your values:
+
+```env
+BOT_TOKEN=123456:your_token_here
+WEBAPP_URL=https://your-tunnel-url.ngrok-free.app
+WEB_HOST=127.0.0.1
+WEB_PORT=8000
+DATA_DIR=./data
+```
+
+Run:
+
+```bat
 python -m app.main
 ```
 
-## Important for Telegram Mini Apps
+---
 
-Telegram opens Mini Apps only from a public `https://` URL.
+### macOS / Linux
 
-For development:
+```bash
+cd project
 
-- run this project locally,
-- expose it via `ngrok`, `cloudflared`, or another tunnel,
-- set `WEBAPP_URL` in `.env` to that public HTTPS address.
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
 
-Example:
+# Install dependencies
+pip install -r requirements.txt
 
-```env
-WEBAPP_URL=https://cool-bot-demo.ngrok-free.app
+# Create .env from example
+cp .env.example .env
 ```
 
-## Bot Flow
+Edit `.env` and fill in your values:
 
-1. User sends `/start`
-2. Bot asks for contact via `request_contact`
-3. After contact is shared, bot stores it and sends an inline button
-4. Button opens the Mini App with the fintech UI
+```env
+BOT_TOKEN=123456:your_token_here
+WEBAPP_URL=https://your-tunnel-url.ngrok-free.app
+WEB_HOST=127.0.0.1
+WEB_PORT=8000
+DATA_DIR=./data
+```
+
+Run:
+
+```bash
+python -m app.main
+```
+
+---
+
+## Exposing Localhost for the Mini App (required)
+
+Telegram only loads Mini Apps from a **public HTTPS URL**.  
+For local development, use a tunnel tool:
+
+### Option A — ngrok
+
+```bash
+# Install from https://ngrok.com/download
+ngrok http 8000
+```
+
+Copy the `https://xxxx.ngrok-free.app` URL → set as `WEBAPP_URL` in `.env`.
+
+### Option B — cloudflared
+
+```bash
+# Install from https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/
+cloudflared tunnel --url http://localhost:8000
+```
+
+Copy the `https://xxxx.trycloudflare.com` URL → set as `WEBAPP_URL` in `.env`.
+
+> Restart the bot after changing `WEBAPP_URL`.
+
+---
+
+## Dependencies
+
+| Package               | Purpose                          |
+|-----------------------|----------------------------------|
+| `python-telegram-bot` | Telegram Bot API client          |
+| `fastapi`             | Web framework for the Mini App   |
+| `uvicorn`             | ASGI server                      |
+| `jinja2`              | HTML templating                  |
+| `python-dotenv`       | Load `.env` configuration        |
+
+---
 
 ## Storage
 
-This scaffold uses a simple JSON file in `data/users.json`.
-It is enough for a prototype. Later you can swap it for PostgreSQL or Redis.
+User contacts are stored in `data/users.json` — sufficient for a prototype.  
+For production, swap it for PostgreSQL, Redis, or another database.
+
+---
+
+## Test Bot
+
+Try it live: [@test124Bot_bot](https://t.me/test124Bot_bot)
