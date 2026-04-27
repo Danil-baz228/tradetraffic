@@ -19,9 +19,8 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
-def run_web_server() -> None:
-    settings = get_settings()
-    app = create_app(settings)
+def run_web_server(settings, storage) -> None:
+    app = create_app(settings, storage)
     uvicorn.run(
         app,
         host=settings.web_host,
@@ -37,7 +36,12 @@ def main() -> None:
 
     storage = UserStorage(settings.data_dir)
 
-    web_thread = threading.Thread(target=run_web_server, name="mini-app-web", daemon=True)
+    web_thread = threading.Thread(
+        target=run_web_server,
+        args=(settings, storage),
+        name="mini-app-web",
+        daemon=True,
+    )
     web_thread.start()
 
     application = build_application(settings, storage)

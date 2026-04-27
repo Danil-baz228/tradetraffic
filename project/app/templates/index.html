@@ -1,116 +1,362 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Fintech Mini App</title>
-    <link rel="stylesheet" href="/static/css/styles.css" />
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  </head>
-  <body>
-    <main class="app-shell">
-      <section class="phone-screen">
-        <header class="profile-card">
-          <div class="profile-left">
-            <div class="avatar">
-              <div class="avatar-core"></div>
-            </div>
-            <div class="profile-copy">
-              <p class="eyebrow" id="username">@satoshi</p>
-              <p class="muted" id="user-subtitle">Premium trader</p>
-            </div>
-          </div>
-          <div class="profile-balance">
-            <p class="muted">Balance</p>
-            <p class="balance-value">$24,580.42</p>
-          </div>
-        </header>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+  <title>CryptoTrade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<div id="app">
 
-        <div class="tabs-row">
-          <button class="pair-pill">BTC/USDT</button>
-          <div class="stat-chip">96.4K</div>
-          <div class="stat-chip gain">+2.84%</div>
-          <div class="stat-chip loss">P/L +840</div>
+  <!-- LOADING -->
+  <div id="loading-screen">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="main-app" class="hidden">
+
+    <!-- Glow blobs (decorative) -->
+    <div class="glow glow-aqua"></div>
+    <div class="glow glow-green"></div>
+    <div class="glow glow-red"></div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="sb-time" id="sb-time">9:41</span>
+      <div class="sb-right"><span>LTE</span><span id="sb-batt">100%</span></div>
+    </div>
+
+    <!-- ═══ HOME PAGE ═══ -->
+    <div id="page-home" class="page active">
+
+      <!-- Header Card -->
+      <div class="header-card">
+        <div class="hc-avatar" id="hc-avatar" style="background:#28E0A0;">
+          <div class="hc-avatar-dot"></div>
+        </div>
+        <div class="hc-info">
+          <div class="hc-name" id="hc-name">@user</div>
+          <div class="hc-sub" id="hc-sub">Premium trader</div>
+        </div>
+        <div class="hc-balance">
+          <div class="hc-bal-cap">Balance</div>
+          <div class="hc-bal-val" id="hc-bal-val">$0.00</div>
+        </div>
+      </div>
+
+      <!-- Trading Card -->
+      <div class="trading-card">
+        <!-- Pair chip + stat cards -->
+        <div class="pair-chip" id="pair-chip">
+          <span>BTC/USDT</span><span class="chip-caret">▾</span>
+        </div>
+        <div class="stat-cards">
+          <div class="stat-card" id="sc-price">—</div>
+          <div class="stat-card green" id="sc-change">+0.00%</div>
+          <div class="stat-card" id="sc-pl">P/L —</div>
         </div>
 
-        <section class="trade-card">
-          <div class="chart-heading">
-            <div>
-              <p class="chart-label">BTC/USDT - 1H</p>
-              <h1 class="chart-price">73,131.0</h1>
-            </div>
-            <div class="chart-badge">LIVE</div>
+        <!-- Chart glow -->
+        <div class="chart-glow"></div>
+
+        <!-- Chart area -->
+        <div class="chart-area">
+          <canvas id="chart-canvas"></canvas>
+          <div id="chart-loader" class="chart-loader"><div class="spinner sm"></div></div>
+        </div>
+
+        <!-- Timeframe row -->
+        <div class="tf-row">
+          <span class="tf active" data-iv="1m">1m</span>
+          <span class="tf" data-iv="5m">5m</span>
+          <span class="tf" data-iv="15m">15m</span>
+          <span class="tf" data-iv="1h">1H</span>
+          <span class="tf" data-iv="4h">4H</span>
+          <span class="tf" data-iv="1d">1D</span>
+        </div>
+
+        <!-- Active bet or trend strip -->
+        <div id="trend-strip" class="trend-strip">
+          <span id="trend-text">ENTRY — &nbsp;&nbsp; TARGET — &nbsp;&nbsp; STOP —</span>
+        </div>
+      </div>
+
+      <!-- Action Row -->
+      <div class="action-row">
+        <div class="action-shell up-shell">
+          <div class="action-glow up-glow"></div>
+          <button id="bet-up-btn" class="action-btn up-btn" disabled>
+            <span class="ab-label">UP</span>
+            <span class="ab-sub" id="up-sub">Long +90%</span>
+          </button>
+        </div>
+        <div class="action-shell down-shell">
+          <div class="action-glow down-glow"></div>
+          <button id="bet-down-btn" class="action-btn down-btn" disabled>
+            <span class="ab-label">DOWN</span>
+            <span class="ab-sub" id="down-sub">Short -100%</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bet controls (amount + duration) -->
+      <div id="bet-controls" class="bet-controls">
+        <div class="bc-amount-row">
+          <button class="bc-preset" data-val="5">$5</button>
+          <button class="bc-preset" data-val="10">$10</button>
+          <button class="bc-preset" data-val="25">$25</button>
+          <button class="bc-preset active" data-val="50">$50</button>
+          <input type="number" id="bet-amount" value="50" min="1">
+        </div>
+        <div class="bc-dur-row">
+          <button class="bc-dur active" data-dur="60">1 мин</button>
+          <button class="bc-dur" data-dur="300">5 мин</button>
+          <button class="bc-dur" data-dur="900">15 мин</button>
+        </div>
+      </div>
+
+      <!-- Active bet overlay -->
+      <div id="active-bet-bar" class="active-bet-bar hidden">
+        <div class="abb-left">
+          <span id="abb-dir-icon" class="abb-dir">↑</span>
+          <div>
+            <div id="abb-label" class="abb-label">UP • $50</div>
+            <div class="abb-entry" id="abb-entry">Entry: —</div>
           </div>
+        </div>
+        <div class="abb-center">
+          <div class="abb-timer-cap">Осталось</div>
+          <div id="abb-timer" class="abb-timer">--:--</div>
+        </div>
+        <div id="abb-pl" class="abb-pl neutral">—</div>
+      </div>
 
-          <div class="chart-frame">
-            <svg id="candles" viewBox="0 0 320 220" preserveAspectRatio="none"></svg>
-            <svg id="volume" viewBox="0 0 320 58" preserveAspectRatio="none"></svg>
+    </div><!-- /page-home -->
+
+    <!-- ═══ STATS PAGE ═══ -->
+    <div id="page-stats" class="page">
+
+      <div class="header-card">
+        <div class="hc-avatar" style="background:#4DD5FF;">
+          <div class="hc-avatar-dot" style="background:#071018;"></div>
+        </div>
+        <div class="hc-info">
+          <div class="hc-name" id="stats-hc-name">@user</div>
+          <div class="hc-sub">Analytics hub</div>
+        </div>
+        <div class="hc-balance">
+          <div class="hc-bal-cap">30D P/L</div>
+          <div class="hc-bal-val" id="stats-pl">+$0</div>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <div class="sc-title">Portfolio stats</div>
+        <div class="sc-sub">Realtime analytics across your positions</div>
+        <div class="sc-big-pl" id="stats-big-pl">+$0.00</div>
+
+        <div class="metric-row">
+          <div class="metric-card" id="m-roi">
+            <div class="metric-val">0%</div>
+            <div class="metric-lbl">ROI</div>
           </div>
-
-          <div class="timeframe-row">
-            <button class="timeframe active">1H</button>
-            <button class="timeframe">4H</button>
-            <button class="timeframe">1D</button>
+          <div class="metric-card win" id="m-winrate">
+            <div class="metric-val green">0%</div>
+            <div class="metric-lbl">Win rate</div>
           </div>
-
-          <div class="trade-summary">
-            ENTRY 95.8K&nbsp;&nbsp; TARGET 98.2K&nbsp;&nbsp; STOP 94.9K
+          <div class="metric-card risk" id="m-draws">
+            <div class="metric-val red">$0</div>
+            <div class="metric-lbl">Drawdown</div>
           </div>
-        </section>
+        </div>
 
-        <section class="actions-row">
-          <button class="action-card up-action" id="up-action">
-            <span class="action-title">UP</span>
-            <span class="action-meta">Long +12%</span>
-          </button>
-          <button class="action-card down-action" id="down-action">
-            <span class="action-title">DOWN</span>
-            <span class="action-meta">Short -8%</span>
-          </button>
-        </section>
+        <div class="perf-panel">
+          <div class="perf-label">История ставок</div>
+          <div id="bets-list" class="bets-list-compact">
+            <div class="empty-state">Нет ставок</div>
+          </div>
+        </div>
 
-        <section class="content-panels" id="content-panels">
-          <article class="panel" data-panel="home">
-            <h2>Trading dashboard</h2>
-            <p>Open positions, last price and fast entry points live here.</p>
-          </article>
-          <article class="panel" data-panel="stats">
-            <h2>Stats</h2>
-            <p>ROI, P/L and weekly performance cards for the account.</p>
-          </article>
-          <article class="panel" data-panel="profile">
-            <h2>Profile</h2>
-            <p>User profile, allocation and recent activity summary.</p>
-          </article>
-          <article class="panel" data-panel="settings">
-            <h2>Settings</h2>
-            <p>Security, alerts and display preferences for the Mini App.</p>
-          </article>
-        </section>
+        <div class="summary-strip" id="stats-summary">
+          Best performer: — &nbsp;&nbsp; +0%
+        </div>
+      </div>
 
-        <nav class="bottom-nav">
-          <button class="nav-item active" data-tab="home">
-            <span class="nav-icon nav-home"></span>
-            <span class="nav-label">HOME</span>
-          </button>
-          <button class="nav-item" data-tab="stats">
-            <span class="nav-icon nav-stats">
-              <span></span><span></span><span></span>
-            </span>
-            <span class="nav-label">STATS</span>
-          </button>
-          <button class="nav-item" data-tab="profile">
-            <span class="nav-icon nav-profile"></span>
-            <span class="nav-label">PROFILE</span>
-          </button>
-          <button class="nav-item" data-tab="settings">
-            <span class="nav-icon nav-settings"></span>
-            <span class="nav-label">SET</span>
-          </button>
-        </nav>
-      </section>
-    </main>
+      <div class="footer-row">
+        <div class="footer-card">
+          <div class="fc-cap">СТАВОК ВСЕГО</div>
+          <div class="fc-val" id="stats-total">0</div>
+        </div>
+        <div class="footer-card win-card">
+          <div class="fc-cap">ПОБЕД</div>
+          <div class="fc-val green" id="stats-wins">0</div>
+        </div>
+      </div>
 
-    <script src="/static/js/app.js"></script>
-  </body>
+    </div><!-- /page-stats -->
+
+    <!-- ═══ PROFILE PAGE ═══ -->
+    <div id="page-profile" class="page">
+
+      <div class="header-card">
+        <div class="hc-avatar" style="background:#79A7FF;">
+          <div class="hc-avatar-dot" style="background:#0B1020;"></div>
+        </div>
+        <div class="hc-info">
+          <div class="hc-name" id="pr-name">User</div>
+          <div class="hc-sub">Verified trader</div>
+        </div>
+        <div class="hc-balance">
+          <div class="hc-bal-cap">Net worth</div>
+          <div class="hc-bal-val" id="pr-bal">$0.00</div>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <div class="pc-title">Account profile</div>
+        <div class="pc-sub">Identity, balances and portfolio mix</div>
+
+        <div class="hero-block">
+          <div class="hero-name" id="pr-hero-name">User</div>
+          <div class="hero-meta" id="pr-hero-meta">UID —</div>
+          <div class="hero-tag">Balance $<span id="pr-hero-bal">0.00</span></div>
+        </div>
+
+        <div class="alloc-title">Betting breakdown</div>
+        <div class="alloc-row">
+          <div class="alloc-card">
+            <div class="alloc-val" id="pr-total-bets">0</div>
+            <div class="alloc-lbl">Ставок</div>
+          </div>
+          <div class="alloc-card win-bg">
+            <div class="alloc-val green" id="pr-wins">0</div>
+            <div class="alloc-lbl">Победы</div>
+          </div>
+          <div class="alloc-card red-bg">
+            <div class="alloc-val red" id="pr-losses">0</div>
+            <div class="alloc-lbl">Пораж.</div>
+          </div>
+        </div>
+
+        <div class="activity-title">Последние ставки</div>
+        <div id="pr-activity" class="activity-list">
+          <div class="empty-state sm">Нет ставок</div>
+        </div>
+      </div>
+
+      <div class="footer-row">
+        <div class="footer-card">
+          <div class="fc-cap">DEPOSIT</div>
+          <div class="fc-val">Add funds</div>
+        </div>
+        <div class="footer-card win-card">
+          <div class="fc-cap">WIN RATE</div>
+          <div class="fc-val green" id="pr-winrate">0%</div>
+        </div>
+      </div>
+
+    </div><!-- /page-profile -->
+
+    <!-- ═══ SETTINGS PAGE ═══ -->
+    <div id="page-settings" class="page">
+
+      <div class="header-card">
+        <div class="hc-avatar" style="background:#8FA2C1;">
+          <div class="hc-avatar-dot" style="background:#0F1520;top:13px;left:13px;"></div>
+        </div>
+        <div class="hc-info">
+          <div class="hc-name">Settings</div>
+          <div class="hc-sub">Controls and preferences</div>
+        </div>
+        <div class="hc-balance">
+          <div class="hc-bal-cap">Plan</div>
+          <div class="hc-bal-val">FREE</div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="sc-title">Preferences</div>
+        <div class="sc-sub">Notification, security and app defaults</div>
+
+        <div class="set-panel">
+          <div class="set-panel-text">Telegram Mini App<br><span class="set-panel-sub">Authenticated via Telegram</span></div>
+        </div>
+
+        <div class="set-row"><span>Symbol</span><span class="set-val" id="set-symbol">BTC/USDT</span></div>
+        <div class="set-row"><span>Chart interval</span><span class="set-val" id="set-interval">1m</span></div>
+        <div class="set-row"><span>Theme</span><span class="set-val">Midnight neon</span></div>
+        <div class="set-row"><span>Language</span><span class="set-val">Русский</span></div>
+      </div>
+
+      <!-- Admin section (shown only for admins) -->
+      <div id="admin-section" class="admin-section hidden">
+        <div class="admin-section-title">Панель администратора</div>
+        <div class="admin-tabs">
+          <button class="adm-tab active" data-atab="users">Пользователи</button>
+          <button class="adm-tab" data-atab="bets">Ставки</button>
+        </div>
+        <div id="atab-users" class="atab-content active">
+          <div id="admin-users-list" class="admin-list">
+            <div class="empty-state">Загрузка...</div>
+          </div>
+        </div>
+        <div id="atab-bets" class="atab-content">
+          <div id="admin-bets-list" class="admin-list">
+            <div class="empty-state">Загрузка...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-row">
+        <div class="footer-card">
+          <div class="fc-cap">SUPPORT</div>
+          <div class="fc-val">Help center</div>
+        </div>
+        <div class="footer-card red-card">
+          <div class="fc-cap">ACCOUNT</div>
+          <div class="fc-val red">Log out</div>
+        </div>
+      </div>
+
+    </div><!-- /page-settings -->
+
+    <!-- ═══ BOTTOM NAV ═══ -->
+    <nav class="bottom-nav">
+      <div class="nav-pill">
+        <button class="nav-tab active" data-page="home" id="tab-home">
+          <div class="tab-icon home-icon"></div>
+          <span>HOME</span>
+        </button>
+        <button class="nav-tab" data-page="stats" id="tab-stats">
+          <div class="tab-icon stats-icon">
+            <span></span><span></span><span></span>
+          </div>
+          <span>STATS</span>
+        </button>
+        <button class="nav-tab" data-page="profile" id="tab-profile">
+          <div class="tab-icon profile-icon">
+            <div class="pi-head"></div>
+          </div>
+          <span>PROFILE</span>
+        </button>
+        <button class="nav-tab" data-page="settings" id="tab-settings">
+          <div class="tab-icon settings-icon">
+            <div class="si-dot"></div>
+          </div>
+          <span>SET</span>
+        </button>
+      </div>
+    </nav>
+
+  </div><!-- /main-app -->
+</div><!-- /app -->
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
 </html>

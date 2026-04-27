@@ -25,8 +25,8 @@ from .storage import UserStorage
 
 
 LOGGER = logging.getLogger(__name__)
-CONTACT_BUTTON_TEXT = "Share contact"
-OPEN_APP_TEXT = "Open Mini App"
+CONTACT_BUTTON_TEXT = "Поделиться контактом"
+OPEN_APP_TEXT = "Открыть Mini App"
 
 
 def build_application(settings: Settings, storage: UserStorage) -> Application:
@@ -50,7 +50,7 @@ def contact_keyboard() -> ReplyKeyboardMarkup:
         keyboard,
         resize_keyboard=True,
         one_time_keyboard=True,
-        input_field_placeholder="Share your phone number to continue",
+        input_field_placeholder="Поделитесь номером телефона, чтобы продолжить",
     )
 
 
@@ -74,15 +74,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if registered_user:
         await update.message.reply_text(
             (
-                f"Welcome back, {registered_user.get('first_name') or user.first_name}.\n"
-                "Your contact is already saved. Open the Mini App when you're ready."
+                f"С возвращением, {registered_user.get('first_name') or user.first_name}.\n"
+                "Ваш контакт уже сохранён. Открывайте Mini App, когда будете готовы."
             ),
             reply_markup=open_app_keyboard(settings),
         )
         return
 
     await update.message.reply_text(
-        "Share your contact to unlock the Mini App.",
+        "Поделитесь контактом, чтобы открыть Mini App.",
         reply_markup=contact_keyboard(),
     )
 
@@ -98,7 +98,7 @@ async def handle_contact(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     if contact.user_id and contact.user_id != user.id:
         await update.message.reply_text(
-            "Please share your own contact.",
+            "Пожалуйста, отправьте именно свой контакт.",
             reply_markup=contact_keyboard(),
         )
         return
@@ -114,11 +114,11 @@ async def handle_contact(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     )
 
     await update.message.reply_text(
-        "Contact saved. Tap the button below to open the Mini App.",
+        "Контакт сохранён. Нажмите кнопку ниже, чтобы открыть Mini App.",
         reply_markup=ReplyKeyboardRemove(),
     )
     await update.message.reply_text(
-        "Launch the trading dashboard:",
+        "Открыть торговую панель:",
         reply_markup=open_app_keyboard(settings),
     )
 
@@ -129,7 +129,7 @@ async def open_app_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
     settings: Settings = context.application.bot_data["settings"]
     await update.message.reply_text(
-        "Open the Mini App from the button below.",
+        "Откройте Mini App по кнопке ниже.",
         reply_markup=open_app_keyboard(settings),
     )
 
@@ -140,4 +140,4 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
 
     data = update.effective_message.web_app_data.data
     LOGGER.info("Mini App payload: %s", data)
-    await update.effective_message.reply_text(f"Mini App sent data: {data}")
+    await update.effective_message.reply_text(f"Mini App отправил данные: {data}")

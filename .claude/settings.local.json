@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(pip install *)",
+      "Bash(python -c \"from app.web import app; from app.storage import UserStorage; from app.config import get_settings; print\\('OK'\\)\")",
+      "Bash(python -c \"import fastapi; print\\(fastapi.__version__\\)\")",
+      "Bash(python -c \"from app.web import app; import uvicorn; print\\('ASGI app ready'\\)\")",
+      "Bash(python -W error -c ' *)",
+      "Bash(python -c \"from app.web import create_app; print\\('web OK'\\)\")",
+      "Bash(python -c \"from app.storage import UserStorage; print\\('storage OK'\\)\")"
+    ]
+  }
+}
