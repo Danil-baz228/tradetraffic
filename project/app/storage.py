@@ -24,8 +24,14 @@ class UserStorage:
 
     def _read_users(self) -> dict[str, Any]:
         try:
-            return json.loads(self._users_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
+            raw = json.loads(self._users_path.read_text(encoding="utf-8"))
+            # migrate old list format → dict
+            if isinstance(raw, list):
+                d = {str(u["telegram_id"]): u for u in raw if "telegram_id" in u}
+                self._write_users(d)
+                return d
+            return raw if isinstance(raw, dict) else {}
+        except (json.JSONDecodeError, Exception):
             return {}
 
     def _write_users(self, data: dict[str, Any]) -> None:

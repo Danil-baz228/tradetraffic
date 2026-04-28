@@ -7,70 +7,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/styles.css?v={{ asset_version }}">
 </head>
 <body>
 <div id="app">
 
-  <!-- LOADING -->
-  <div id="loading-screen">
-    <div class="spinner"></div>
-  </div>
+  <div id="loading-screen"><div class="spinner"></div></div>
 
-  <!-- MAIN APP -->
   <div id="main-app" class="hidden">
-
-    <!-- Glow blobs (decorative) -->
     <div class="glow glow-aqua"></div>
     <div class="glow glow-green"></div>
     <div class="glow glow-red"></div>
 
-    <!-- Status bar -->
-    <div class="status-bar">
-      <span class="sb-time" id="sb-time">9:41</span>
-      <div class="sb-right"><span>LTE</span><span id="sb-batt">100%</span></div>
-    </div>
-
-    <!-- ═══ HOME PAGE ═══ -->
+    <!-- ═══ РЫНОК ═══ -->
     <div id="page-home" class="page active">
-
-      <!-- Header Card -->
       <div class="header-card">
-        <div class="hc-avatar" id="hc-avatar" style="background:#28E0A0;">
-          <div class="hc-avatar-dot"></div>
-        </div>
+        <div class="hc-avatar" id="hc-avatar" style="background:#28E0A0;"><div class="hc-avatar-dot"></div></div>
         <div class="hc-info">
           <div class="hc-name" id="hc-name">@user</div>
-          <div class="hc-sub" id="hc-sub">Premium trader</div>
+          <div class="hc-sub">Премиум трейдер</div>
         </div>
         <div class="hc-balance">
-          <div class="hc-bal-cap">Balance</div>
-          <div class="hc-bal-val" id="hc-bal-val">$0.00</div>
+          <div class="hc-bal-cap">Баланс</div>
+          <div class="hc-bal-val" id="hc-bal-val">₽0</div>
         </div>
       </div>
 
-      <!-- Trading Card -->
       <div class="trading-card">
-        <!-- Pair chip + stat cards -->
-        <div class="pair-chip" id="pair-chip">
-          <span>BTC/USDT</span><span class="chip-caret">▾</span>
-        </div>
+        <button id="pair-chip" class="pair-chip" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span id="pair-chip-label">BTC/USDT</span>
+          <span class="chip-caret">▾</span>
+        </button>
+        <div id="pair-menu" class="pair-menu" role="listbox" aria-label="Выбор торговой пары"></div>
         <div class="stat-cards">
           <div class="stat-card" id="sc-price">—</div>
           <div class="stat-card green" id="sc-change">+0.00%</div>
           <div class="stat-card" id="sc-pl">P/L —</div>
         </div>
-
-        <!-- Chart glow -->
         <div class="chart-glow"></div>
-
-        <!-- Chart area -->
-        <div class="chart-area">
+        <div id="chart-area" class="chart-area">
           <canvas id="chart-canvas"></canvas>
           <div id="chart-loader" class="chart-loader"><div class="spinner sm"></div></div>
         </div>
-
-        <!-- Timeframe row -->
         <div class="tf-row">
           <span class="tf active" data-iv="1m">1m</span>
           <span class="tf" data-iv="5m">5m</span>
@@ -79,54 +57,16 @@
           <span class="tf" data-iv="4h">4H</span>
           <span class="tf" data-iv="1d">1D</span>
         </div>
-
-        <!-- Active bet or trend strip -->
-        <div id="trend-strip" class="trend-strip">
-          <span id="trend-text">ENTRY — &nbsp;&nbsp; TARGET — &nbsp;&nbsp; STOP —</span>
-        </div>
+        <div class="trend-strip"><span id="trend-text">ВХОД — &nbsp; ЦЕЛЬ — &nbsp; СТОП —</span></div>
       </div>
 
-      <!-- Action Row -->
-      <div class="action-row">
-        <div class="action-shell up-shell">
-          <div class="action-glow up-glow"></div>
-          <button id="bet-up-btn" class="action-btn up-btn" disabled>
-            <span class="ab-label">UP</span>
-            <span class="ab-sub" id="up-sub">Long +90%</span>
-          </button>
-        </div>
-        <div class="action-shell down-shell">
-          <div class="action-glow down-glow"></div>
-          <button id="bet-down-btn" class="action-btn down-btn" disabled>
-            <span class="ab-label">DOWN</span>
-            <span class="ab-sub" id="down-sub">Short -100%</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bet controls (amount + duration) -->
-      <div id="bet-controls" class="bet-controls">
-        <div class="bc-amount-row">
-          <button class="bc-preset" data-val="5">$5</button>
-          <button class="bc-preset" data-val="10">$10</button>
-          <button class="bc-preset" data-val="25">$25</button>
-          <button class="bc-preset active" data-val="50">$50</button>
-          <input type="number" id="bet-amount" value="50" min="1">
-        </div>
-        <div class="bc-dur-row">
-          <button class="bc-dur active" data-dur="60">1 мин</button>
-          <button class="bc-dur" data-dur="300">5 мин</button>
-          <button class="bc-dur" data-dur="900">15 мин</button>
-        </div>
-      </div>
-
-      <!-- Active bet overlay -->
+      <!-- Активная ставка -->
       <div id="active-bet-bar" class="active-bet-bar hidden">
         <div class="abb-left">
-          <span id="abb-dir-icon" class="abb-dir">↑</span>
+          <span id="abb-dir-icon" class="abb-dir up">↑</span>
           <div>
-            <div id="abb-label" class="abb-label">UP • $50</div>
-            <div class="abb-entry" id="abb-entry">Entry: —</div>
+            <div id="abb-label" class="abb-label">РОСТ • ₽500</div>
+            <div id="abb-entry" class="abb-entry">Вход: —</div>
           </div>
         </div>
         <div class="abb-center">
@@ -136,227 +76,168 @@
         <div id="abb-pl" class="abb-pl neutral">—</div>
       </div>
 
-    </div><!-- /page-home -->
-
-    <!-- ═══ STATS PAGE ═══ -->
-    <div id="page-stats" class="page">
-
-      <div class="header-card">
-        <div class="hc-avatar" style="background:#4DD5FF;">
-          <div class="hc-avatar-dot" style="background:#071018;"></div>
+      <!-- Кнопки РОСТ / ПАДЕНИЕ -->
+      <div class="action-row">
+        <div class="action-shell">
+          <div class="action-glow up-glow"></div>
+          <button class="action-btn up-btn" id="open-up-btn" disabled>
+            <span class="ab-label">РОСТ</span>
+            <span class="ab-sub" id="up-sub">Long +90%</span>
+          </button>
         </div>
-        <div class="hc-info">
-          <div class="hc-name" id="stats-hc-name">@user</div>
-          <div class="hc-sub">Analytics hub</div>
-        </div>
-        <div class="hc-balance">
-          <div class="hc-bal-cap">30D P/L</div>
-          <div class="hc-bal-val" id="stats-pl">+$0</div>
+        <div class="action-shell">
+          <div class="action-glow down-glow"></div>
+          <button class="action-btn down-btn" id="open-down-btn" disabled>
+            <span class="ab-label">ПАДЕНИЕ</span>
+            <span class="ab-sub" id="down-sub">Short -100%</span>
+          </button>
         </div>
       </div>
+    </div>
 
+    <!-- ═══ СТАТИСТИКА ═══ -->
+    <div id="page-stats" class="page">
+      <div class="header-card">
+        <div class="hc-avatar" style="background:#4DD5FF;"><div class="hc-avatar-dot" style="background:#071018;"></div></div>
+        <div class="hc-info"><div class="hc-name" id="stats-hc-name">@user</div><div class="hc-sub">Аналитика</div></div>
+        <div class="hc-balance"><div class="hc-bal-cap">30Д P/L</div><div class="hc-bal-val" id="stats-pl">+₽0</div></div>
+      </div>
       <div class="stats-card">
-        <div class="sc-title">Portfolio stats</div>
-        <div class="sc-sub">Realtime analytics across your positions</div>
-        <div class="sc-big-pl" id="stats-big-pl">+$0.00</div>
-
+        <div class="sc-title">Статистика портфеля</div>
+        <div class="sc-sub">Реальная аналитика по вашим позициям</div>
+        <div class="sc-big-pl" id="stats-big-pl">+₽0.00</div>
         <div class="metric-row">
-          <div class="metric-card" id="m-roi">
-            <div class="metric-val">0%</div>
-            <div class="metric-lbl">ROI</div>
-          </div>
-          <div class="metric-card win" id="m-winrate">
-            <div class="metric-val green">0%</div>
-            <div class="metric-lbl">Win rate</div>
-          </div>
-          <div class="metric-card risk" id="m-draws">
-            <div class="metric-val red">$0</div>
-            <div class="metric-lbl">Drawdown</div>
-          </div>
+          <div class="metric-card" id="m-roi"><div class="metric-val">0%</div><div class="metric-lbl">ROI</div></div>
+          <div class="metric-card win" id="m-winrate"><div class="metric-val green">0%</div><div class="metric-lbl">Винрейт</div></div>
+          <div class="metric-card risk" id="m-draws"><div class="metric-val red">₽0</div><div class="metric-lbl">Просадка</div></div>
         </div>
-
         <div class="perf-panel">
           <div class="perf-label">История ставок</div>
-          <div id="bets-list" class="bets-list-compact">
-            <div class="empty-state">Нет ставок</div>
-          </div>
+          <div id="bets-list" class="bets-list-compact"><div class="empty-state">Нет ставок</div></div>
         </div>
-
-        <div class="summary-strip" id="stats-summary">
-          Best performer: — &nbsp;&nbsp; +0%
-        </div>
+        <div class="summary-strip" id="stats-summary">Лучшая ставка: — +0%</div>
       </div>
-
       <div class="footer-row">
-        <div class="footer-card">
-          <div class="fc-cap">СТАВОК ВСЕГО</div>
-          <div class="fc-val" id="stats-total">0</div>
-        </div>
-        <div class="footer-card win-card">
-          <div class="fc-cap">ПОБЕД</div>
-          <div class="fc-val green" id="stats-wins">0</div>
-        </div>
+        <div class="footer-card"><div class="fc-cap">ВСЕГО СТАВОК</div><div class="fc-val" id="stats-total">0</div></div>
+        <div class="footer-card win-card"><div class="fc-cap">ПОБЕД</div><div class="fc-val green" id="stats-wins">0</div></div>
       </div>
+    </div>
 
-    </div><!-- /page-stats -->
-
-    <!-- ═══ PROFILE PAGE ═══ -->
+    <!-- ═══ ПРОФИЛЬ ═══ -->
     <div id="page-profile" class="page">
-
       <div class="header-card">
-        <div class="hc-avatar" style="background:#79A7FF;">
-          <div class="hc-avatar-dot" style="background:#0B1020;"></div>
-        </div>
-        <div class="hc-info">
-          <div class="hc-name" id="pr-name">User</div>
-          <div class="hc-sub">Verified trader</div>
-        </div>
-        <div class="hc-balance">
-          <div class="hc-bal-cap">Net worth</div>
-          <div class="hc-bal-val" id="pr-bal">$0.00</div>
-        </div>
+        <div class="hc-avatar" style="background:#79A7FF;"><div class="hc-avatar-dot" style="background:#0B1020;"></div></div>
+        <div class="hc-info"><div class="hc-name" id="pr-name">Пользователь</div><div class="hc-sub">Верифицированный трейдер</div></div>
+        <div class="hc-balance"><div class="hc-bal-cap">Капитал</div><div class="hc-bal-val" id="pr-bal">₽0</div></div>
       </div>
-
       <div class="profile-card">
-        <div class="pc-title">Account profile</div>
-        <div class="pc-sub">Identity, balances and portfolio mix</div>
-
+        <div class="pc-title">Профиль аккаунта</div><div class="pc-sub">Личные данные и статистика</div>
         <div class="hero-block">
-          <div class="hero-name" id="pr-hero-name">User</div>
+          <div class="hero-name" id="pr-hero-name">Пользователь</div>
           <div class="hero-meta" id="pr-hero-meta">UID —</div>
-          <div class="hero-tag">Balance $<span id="pr-hero-bal">0.00</span></div>
+          <div class="hero-tag">Баланс ₽<span id="pr-hero-bal">0</span></div>
         </div>
-
-        <div class="alloc-title">Betting breakdown</div>
+        <div class="alloc-title">Статистика ставок</div>
         <div class="alloc-row">
-          <div class="alloc-card">
-            <div class="alloc-val" id="pr-total-bets">0</div>
-            <div class="alloc-lbl">Ставок</div>
-          </div>
-          <div class="alloc-card win-bg">
-            <div class="alloc-val green" id="pr-wins">0</div>
-            <div class="alloc-lbl">Победы</div>
-          </div>
-          <div class="alloc-card red-bg">
-            <div class="alloc-val red" id="pr-losses">0</div>
-            <div class="alloc-lbl">Пораж.</div>
-          </div>
+          <div class="alloc-card"><div class="alloc-val" id="pr-total-bets">0</div><div class="alloc-lbl">Ставок</div></div>
+          <div class="alloc-card win-bg"><div class="alloc-val green" id="pr-wins">0</div><div class="alloc-lbl">Победы</div></div>
+          <div class="alloc-card red-bg"><div class="alloc-val red" id="pr-losses">0</div><div class="alloc-lbl">Пораж.</div></div>
         </div>
-
         <div class="activity-title">Последние ставки</div>
-        <div id="pr-activity" class="activity-list">
-          <div class="empty-state sm">Нет ставок</div>
-        </div>
+        <div id="pr-activity" class="activity-list"><div class="empty-state sm">Нет ставок</div></div>
       </div>
-
       <div class="footer-row">
-        <div class="footer-card">
-          <div class="fc-cap">DEPOSIT</div>
-          <div class="fc-val">Add funds</div>
-        </div>
-        <div class="footer-card win-card">
-          <div class="fc-cap">WIN RATE</div>
-          <div class="fc-val green" id="pr-winrate">0%</div>
-        </div>
+        <div class="footer-card"><div class="fc-cap">ПОПОЛНИТЬ</div><div class="fc-val">Добавить средства</div></div>
+        <div class="footer-card win-card"><div class="fc-cap">ВИНРЕЙТ</div><div class="fc-val green" id="pr-winrate">0%</div></div>
       </div>
+    </div>
 
-    </div><!-- /page-profile -->
-
-    <!-- ═══ SETTINGS PAGE ═══ -->
+    <!-- ═══ НАСТРОЙКИ ═══ -->
     <div id="page-settings" class="page">
-
       <div class="header-card">
-        <div class="hc-avatar" style="background:#8FA2C1;">
-          <div class="hc-avatar-dot" style="background:#0F1520;top:13px;left:13px;"></div>
-        </div>
-        <div class="hc-info">
-          <div class="hc-name">Settings</div>
-          <div class="hc-sub">Controls and preferences</div>
-        </div>
-        <div class="hc-balance">
-          <div class="hc-bal-cap">Plan</div>
-          <div class="hc-bal-val">FREE</div>
-        </div>
+        <div class="hc-avatar" style="background:#8FA2C1;"><div class="hc-avatar-dot" style="background:#0F1520;top:13px;left:13px;"></div></div>
+        <div class="hc-info"><div class="hc-name">Настройки</div><div class="hc-sub">Управление и параметры</div></div>
+        <div class="hc-balance"><div class="hc-bal-cap">Тариф</div><div class="hc-bal-val">FREE</div></div>
       </div>
-
       <div class="settings-card">
-        <div class="sc-title">Preferences</div>
-        <div class="sc-sub">Notification, security and app defaults</div>
-
-        <div class="set-panel">
-          <div class="set-panel-text">Telegram Mini App<br><span class="set-panel-sub">Authenticated via Telegram</span></div>
-        </div>
-
-        <div class="set-row"><span>Symbol</span><span class="set-val" id="set-symbol">BTC/USDT</span></div>
-        <div class="set-row"><span>Chart interval</span><span class="set-val" id="set-interval">1m</span></div>
-        <div class="set-row"><span>Theme</span><span class="set-val">Midnight neon</span></div>
-        <div class="set-row"><span>Language</span><span class="set-val">Русский</span></div>
+        <div class="sc-title">Параметры</div><div class="sc-sub">Уведомления, безопасность и интерфейс</div>
+        <div class="set-panel"><div class="set-panel-text">Telegram Mini App<br><span class="set-panel-sub">Авторизация через Telegram</span></div></div>
+        <div class="set-row"><span>Символ</span><span class="set-val" id="set-symbol">BTC/USDT</span></div>
+        <div class="set-row"><span>Таймфрейм</span><span class="set-val" id="set-interval">1m</span></div>
+        <div class="set-row"><span>Тема</span><span class="set-val">Midnight neon</span></div>
+        <div class="set-row"><span>Язык</span><span class="set-val">Русский</span></div>
       </div>
-
-      <!-- Admin section (shown only for admins) -->
       <div id="admin-section" class="admin-section hidden">
-        <div class="admin-section-title">Панель администратора</div>
+        <div class="admin-section-title">Панель администратора <button class="adm-refresh-btn" onclick="loadAdminData()">↻</button></div>
         <div class="admin-tabs">
           <button class="adm-tab active" data-atab="users">Пользователи</button>
           <button class="adm-tab" data-atab="bets">Ставки</button>
         </div>
-        <div id="atab-users" class="atab-content active">
-          <div id="admin-users-list" class="admin-list">
-            <div class="empty-state">Загрузка...</div>
-          </div>
-        </div>
-        <div id="atab-bets" class="atab-content">
-          <div id="admin-bets-list" class="admin-list">
-            <div class="empty-state">Загрузка...</div>
-          </div>
-        </div>
+        <div id="atab-users" class="atab-content active"><div id="admin-users-list" class="admin-list"><div class="empty-state">Загрузка...</div></div></div>
+        <div id="atab-bets"  class="atab-content"><div id="admin-bets-list"  class="admin-list"><div class="empty-state">Загрузка...</div></div></div>
       </div>
-
       <div class="footer-row">
-        <div class="footer-card">
-          <div class="fc-cap">SUPPORT</div>
-          <div class="fc-val">Help center</div>
-        </div>
-        <div class="footer-card red-card">
-          <div class="fc-cap">ACCOUNT</div>
-          <div class="fc-val red">Log out</div>
-        </div>
+        <div class="footer-card"><div class="fc-cap">ПОДДЕРЖКА</div><div class="fc-val">Центр помощи</div></div>
+        <div class="footer-card red-card"><div class="fc-cap">АККАУНТ</div><div class="fc-val red">Выйти</div></div>
       </div>
+    </div>
 
-    </div><!-- /page-settings -->
-
-    <!-- ═══ BOTTOM NAV ═══ -->
+    <!-- ═══ НАВИГАЦИЯ ═══ -->
     <nav class="bottom-nav">
       <div class="nav-pill">
-        <button class="nav-tab active" data-page="home" id="tab-home">
-          <div class="tab-icon home-icon"></div>
-          <span>HOME</span>
-        </button>
-        <button class="nav-tab" data-page="stats" id="tab-stats">
-          <div class="tab-icon stats-icon">
-            <span></span><span></span><span></span>
-          </div>
-          <span>STATS</span>
-        </button>
-        <button class="nav-tab" data-page="profile" id="tab-profile">
-          <div class="tab-icon profile-icon">
-            <div class="pi-head"></div>
-          </div>
-          <span>PROFILE</span>
-        </button>
-        <button class="nav-tab" data-page="settings" id="tab-settings">
-          <div class="tab-icon settings-icon">
-            <div class="si-dot"></div>
-          </div>
-          <span>SET</span>
-        </button>
+        <button class="nav-tab active" data-page="home" id="tab-home"><div class="tab-icon home-icon"></div><span>РЫНОК</span></button>
+        <button class="nav-tab" data-page="stats"    id="tab-stats"><div class="tab-icon stats-icon"><span></span><span></span><span></span></div><span>СТАТС</span></button>
+        <button class="nav-tab" data-page="profile"  id="tab-profile"><div class="tab-icon profile-icon"><div class="pi-head"></div></div><span>ПРОФИЛЬ</span></button>
+        <button class="nav-tab" data-page="settings" id="tab-settings"><div class="tab-icon settings-icon"><div class="si-dot"></div></div><span>НАСТР</span></button>
       </div>
     </nav>
 
   </div><!-- /main-app -->
+
+  <!-- ═══ ОВЕРЛЕЙ — вне main-app, чтобы fixed работал ═══ -->
+  <div id="modal-overlay" class="modal-overlay" onclick="closeBetModal()" aria-hidden="true"></div>
+
+  <!-- ═══ МОДАЛ СТАВКИ — вне main-app ═══ -->
+  <div id="bet-modal" class="bet-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="bm-dir-title">
+    <div class="bm-handle"></div>
+
+    <div id="bm-dir-header" class="bm-dir-header up">
+      <span id="bm-dir-arrow" class="bm-dir-arrow">↑</span>
+      <div class="bm-dir-text">
+        <div id="bm-dir-title" class="bm-dir-title">РОСТ</div>
+        <div class="bm-dir-sub"><span id="bm-symbol">BTC/USDT</span> &nbsp;·&nbsp; <span id="bm-price">—</span></div>
+      </div>
+      <span id="bm-change" class="bm-change-badge neutral">0.00%</span>
+    </div>
+
+    <div class="bm-label">Сумма ставки</div>
+    <div class="bm-presets">
+      <button class="bm-preset" data-val="100">₽100</button>
+      <button class="bm-preset" data-val="250">₽250</button>
+      <button class="bm-preset active" data-val="500">₽500</button>
+      <button class="bm-preset" data-val="1000">₽1000</button>
+    </div>
+    <input type="number" id="bet-amount" value="500" min="1" class="bm-custom-input" placeholder="Другая сумма...">
+
+    <div class="bm-label">Время</div>
+    <div class="bm-durs">
+      <button class="bm-dur active" data-dur="60">1 мин</button>
+      <button class="bm-dur" data-dur="300">5 мин</button>
+      <button class="bm-dur" data-dur="900">15 мин</button>
+    </div>
+
+    <div class="bm-footer">
+      <span class="bm-bal-lbl">Доступно: <strong id="bm-balance">₽0</strong></span>
+    </div>
+
+    <button id="bet-confirm-btn" class="bm-confirm up" disabled>
+      Поставить ₽500 на РОСТ
+    </button>
+  </div>
+
 </div><!-- /app -->
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="/static/js/app.js"></script>
+<script src="/static/js/app.js?v={{ asset_version }}"></script>
 </body>
 </html>

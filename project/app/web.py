@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from contextlib import asynccontextmanager
 
 import httpx
@@ -18,6 +19,27 @@ from .storage import UserStorage
 logger = logging.getLogger(__name__)
 
 BINANCE = "https://api.binance.com/api/v3"
+
+
+class BetRequest(BaseModel):
+    direction: str
+    amount: float
+    symbol: str = "BTCUSDT"
+    duration: int = 60
+
+
+class OutcomeRequest(BaseModel):
+    telegram_id: int
+    setting: str
+
+
+class BalanceRequest(BaseModel):
+    telegram_id: int
+    amount: float
+
+
+def current_server_time() -> float:
+    return time.time()
 
 
 async def _bet_resolver(storage: UserStorage) -> None:
@@ -47,15 +69,38 @@ def create_app(settings: Settings, storage: UserStorage) -> FastAPI:
     templates = Jinja2Templates(directory=str(settings.templates_dir))
     app.mount("/static", StaticFiles(directory=str(settings.static_dir)), name="static")
 
+    def get_asset_version() -> str:
+        asset_paths = (
+            settings.static_dir / "css" / "styles.css",
+            settings.static_dir / "js" / "app.js",
+            settings.templates_dir / "index.html",
+        )
+        latest = max(
+            (path.stat().st_mtime_ns for path in asset_paths if path.exists()),
+            default=0,
+        )
+        return str(latest)
+
     # ── pages ──────────────────────────────────────────────────────────────
 
     @app.get("/", response_class=HTMLResponse)
     async def index(request: Request) -> HTMLResponse:
-        return templates.TemplateResponse(request, "index.html", {"request": request})
+        response = templates.TemplateResponse(
+            request,
+            "index.html",
+            {
+                "request": request,
+                "asset_version": get_asset_version(),
+            },
+        )
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
 
     @app.get("/health")
     async def health() -> dict:
-        return {"status": "ok"}
+        return {"status": "ok", "server_time": current_server_time()}
 
     # ── crypto proxy ───────────────────────────────────────────────────────
 
@@ -121,6 +166,7 @@ def create_app(settings: Settings, storage: UserStorage) -> FastAPI:
             "first_name": user.get("first_name"),
             "balance": user.get("balance", 0.0),
             "active_bet": active,
+            "server_time": current_server_time(),
         }
 
     @app.get("/api/bets")
@@ -132,13 +178,11 @@ def create_app(settings: Settings, storage: UserStorage) -> FastAPI:
             raise HTTPException(401, "Unauthorized") from exc
         bets = storage.get_user_bets(tg_user.telegram_id)
         user = storage.get_user(tg_user.telegram_id)
-        return {"bets": bets, "balance": user.get("balance", 0.0) if user else 0.0}
-
-    class BetRequest(BaseModel):
-        direction: str
-        amount: float
-        symbol: str = "BTCUSDT"
-        duration: int = 60
+        return {
+            "bets": bets,
+            "balance": user.get("balance", 0.0) if user else 0.0,
+            "server_time": current_server_time(),
+        }
 
     @app.post("/api/bet")
     async def place_bet(request: Request, body: BetRequest) -> dict:
@@ -174,7 +218,11 @@ def create_app(settings: Settings, storage: UserStorage) -> FastAPI:
             raise HTTPException(400, str(exc)) from exc
 
         user = storage.get_user(tg_user.telegram_id)
-        return {"bet": bet, "balance": user.get("balance", 0.0) if user else 0.0}
+        return {
+            "bet": bet,
+            "balance": user.get("balance", 0.0) if user else 0.0,
+            "server_time": current_server_time(),
+        }
 
     # ── admin API ──────────────────────────────────────────────────────────
 
@@ -192,10 +240,6 @@ def create_app(settings: Settings, storage: UserStorage) -> FastAPI:
             "total": len(users),
         }
 
-    class OutcomeRequest(BaseModel):
-        telegram_id: int
-        setting: str
-
     @app.post("/api/admin/outcome")
     async def admin_set_outcome(request: Request, body: OutcomeRequest) -> dict:
         init_data = request.headers.get("X-Telegram-Init-Data", "")
@@ -209,10 +253,6 @@ def create_app(settings: Settings, storage: UserStorage) -> FastAPI:
         if not ok:
             raise HTTPException(404, "User not found")
         return {"ok": True}
-
-    class BalanceRequest(BaseModel):
-        telegram_id: int
-        amount: float
 
     @app.post("/api/admin/balance")
     async def admin_set_balance(request: Request, body: BalanceRequest) -> dict:

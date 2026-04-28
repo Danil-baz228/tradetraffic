@@ -9,7 +9,18 @@
       "Bash(python -c \"from app.web import app; import uvicorn; print\\('ASGI app ready'\\)\")",
       "Bash(python -W error -c ' *)",
       "Bash(python -c \"from app.web import create_app; print\\('web OK'\\)\")",
-      "Bash(python -c \"from app.storage import UserStorage; print\\('storage OK'\\)\")"
+      "Bash(python -c \"from app.storage import UserStorage; print\\('storage OK'\\)\")",
+      "Bash(python -c \"from app.web import create_app; from app.storage import UserStorage; from app.config import get_settings; s=get_settings\\(\\); st=UserStorage\\(s.data_dir\\); app=create_app\\(s,st\\); print\\('OK — routes:', [r.path for r in app.routes]\\)\")",
+      "Bash(python -m uvicorn app.web:app --host 127.0.0.1 --port 8000 --reload)",
+      "Bash(curl -s http://127.0.0.1:8000/health)",
+      "Bash(curl -s http://127.0.0.1:8000/)",
+      "Bash(curl -s http://127.0.0.1:8000/api/klines/BTCUSDT?limit=3)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('klines OK, first candle:', d[0]['o'] if d else 'empty'\\)\")",
+      "Bash(curl -s \"http://127.0.0.1:8000/api/ticker24h/BTCUSDT\")",
+      "Bash(python -c ' *)",
+      "Bash(taskkill /F /IM python.exe)",
+      "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
+      "Bash(python -c \"from app.web import create_app; from app.storage import UserStorage; from app.config import get_settings; s=get_settings\\(\\); st=UserStorage\\(s.data_dir\\); app=create_app\\(s,st\\); print\\('OK'\\)\")"
     ]
   }
 }
