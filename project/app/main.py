@@ -34,7 +34,7 @@ def main() -> None:
     if not settings.bot_token:
         raise RuntimeError("BOT_TOKEN is not set. Copy .env.example to .env and fill it in.")
 
-    storage = UserStorage(settings.data_dir)
+    storage = UserStorage(settings.data_dir, database_url=settings.database_url)
 
     web_thread = threading.Thread(
         target=run_web_server,

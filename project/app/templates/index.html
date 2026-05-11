@@ -19,7 +19,6 @@
     <div class="glow glow-green"></div>
     <div class="glow glow-red"></div>
 
-    <!-- ═══ РЫНОК ═══ -->
     <div id="page-home" class="page active">
       <div class="header-card">
         <div class="hc-avatar" id="hc-avatar" style="background:#28E0A0;"><div class="hc-avatar-dot"></div></div>
@@ -57,10 +56,9 @@
           <span class="tf" data-iv="4h">4H</span>
           <span class="tf" data-iv="1d">1D</span>
         </div>
-        <div class="trend-strip"><span id="trend-text">ВХОД — &nbsp; ЦЕЛЬ — &nbsp; СТОП —</span></div>
+        <div class="trend-strip"><span id="trend-text">ВХОД —   ЦЕЛЬ —   СТОП —</span></div>
       </div>
 
-      <!-- Активная ставка -->
       <div id="active-bet-bar" class="active-bet-bar hidden">
         <div class="abb-left">
           <span id="abb-dir-icon" class="abb-dir up">↑</span>
@@ -76,26 +74,24 @@
         <div id="abb-pl" class="abb-pl neutral">—</div>
       </div>
 
-      <!-- Кнопки РОСТ / ПАДЕНИЕ -->
       <div class="action-row">
         <div class="action-shell">
           <div class="action-glow up-glow"></div>
           <button class="action-btn up-btn" id="open-up-btn" disabled>
             <span class="ab-label">РОСТ</span>
-            <span class="ab-sub" id="up-sub">Long +90%</span>
+            <span class="ab-sub">Long +90%</span>
           </button>
         </div>
         <div class="action-shell">
           <div class="action-glow down-glow"></div>
           <button class="action-btn down-btn" id="open-down-btn" disabled>
             <span class="ab-label">ПАДЕНИЕ</span>
-            <span class="ab-sub" id="down-sub">Short -100%</span>
+            <span class="ab-sub">Short -100%</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- ═══ СТАТИСТИКА ═══ -->
     <div id="page-stats" class="page">
       <div class="header-card">
         <div class="hc-avatar" style="background:#4DD5FF;"><div class="hc-avatar-dot" style="background:#071018;"></div></div>
@@ -115,15 +111,14 @@
           <div class="perf-label">История ставок</div>
           <div id="bets-list" class="bets-list-compact"><div class="empty-state">Нет ставок</div></div>
         </div>
-        <div class="summary-strip" id="stats-summary">Лучшая ставка: — +0%</div>
+        <div class="summary-strip" id="stats-summary">Лучшая ставка: —</div>
       </div>
       <div class="footer-row">
-        <div class="footer-card"><div class="fc-cap">ВСЕГО СТАВОК</div><div class="fc-val" id="stats-total">0</div></div>
-        <div class="footer-card win-card"><div class="fc-cap">ПОБЕД</div><div class="fc-val green" id="stats-wins">0</div></div>
+        <div class="footer-card"><div class="fc-cap">Всего ставок</div><div class="fc-val" id="stats-total">0</div></div>
+        <div class="footer-card win-card"><div class="fc-cap">Побед</div><div class="fc-val green" id="stats-wins">0</div></div>
       </div>
     </div>
 
-    <!-- ═══ ПРОФИЛЬ ═══ -->
     <div id="page-profile" class="page">
       <div class="header-card">
         <div class="hc-avatar" style="background:#79A7FF;"><div class="hc-avatar-dot" style="background:#0B1020;"></div></div>
@@ -147,12 +142,11 @@
         <div id="pr-activity" class="activity-list"><div class="empty-state sm">Нет ставок</div></div>
       </div>
       <div class="footer-row">
-        <div class="footer-card"><div class="fc-cap">ПОПОЛНИТЬ</div><div class="fc-val">Добавить средства</div></div>
-        <div class="footer-card win-card"><div class="fc-cap">ВИНРЕЙТ</div><div class="fc-val green" id="pr-winrate">0%</div></div>
+        <div class="footer-card"><div class="fc-cap">Пополнить</div><div class="fc-val">Добавить средства</div></div>
+        <div class="footer-card win-card"><div class="fc-cap">Винрейт</div><div class="fc-val green" id="pr-winrate">0%</div></div>
       </div>
     </div>
 
-    <!-- ═══ НАСТРОЙКИ ═══ -->
     <div id="page-settings" class="page">
       <div class="header-card">
         <div class="hc-avatar" style="background:#8FA2C1;"><div class="hc-avatar-dot" style="background:#0F1520;top:13px;left:13px;"></div></div>
@@ -168,36 +162,56 @@
         <div class="set-row"><span>Язык</span><span class="set-val">Русский</span></div>
       </div>
       <div id="admin-section" class="admin-section hidden">
-        <div class="admin-section-title">Панель администратора <button class="adm-refresh-btn" onclick="loadAdminData()">↻</button></div>
-        <div class="admin-tabs">
-          <button class="adm-tab active" data-atab="users">Пользователи</button>
-          <button class="adm-tab" data-atab="bets">Ставки</button>
+        <div class="admin-section-title">
+          <div>
+            <div id="admin-title">Панель администратора</div>
+            <div id="admin-subtitle" class="admin-section-subtitle">Загрузка прав доступа...</div>
+          </div>
+          <button class="adm-refresh-btn" onclick="loadAdminData()">↻</button>
         </div>
-        <div id="atab-users" class="atab-content active"><div id="admin-users-list" class="admin-list"><div class="empty-state">Загрузка...</div></div></div>
-        <div id="atab-bets"  class="atab-content"><div id="admin-bets-list"  class="admin-list"><div class="empty-state">Загрузка...</div></div></div>
+        <div class="admin-tabs">
+          <button id="admin-tab-users" class="adm-tab active" data-atab="users">Игроки</button>
+          <button id="admin-tab-bets" class="adm-tab" data-atab="bets">Ставки</button>
+          <button id="admin-tab-workers" class="adm-tab" data-atab="workers">Воркеры</button>
+        </div>
+        <div id="atab-users" class="atab-content active">
+          <div id="admin-users-list" class="admin-list"><div class="empty-state">Загрузка...</div></div>
+        </div>
+        <div id="atab-bets" class="atab-content">
+          <div id="admin-bets-list" class="admin-list"><div class="empty-state">Загрузка...</div></div>
+        </div>
+        <div id="atab-workers" class="atab-content">
+          <div class="admin-list">
+            <div id="worker-create-card" class="worker-create-card">
+              <div class="worker-create-title">Добавить воркера</div>
+              <div class="worker-create-row">
+                <input id="worker-username-input" class="balance-input worker-input" type="text" placeholder="@username или username">
+                <button class="balance-set-btn" onclick="createWorker()">Добавить</button>
+              </div>
+              <div class="worker-create-note">После добавления сгенерируется уникальный 4-значный код.</div>
+            </div>
+            <div id="admin-workers-list" class="admin-list nested-admin-list"><div class="empty-state">Загрузка...</div></div>
+          </div>
+        </div>
       </div>
       <div class="footer-row">
-        <div class="footer-card"><div class="fc-cap">ПОДДЕРЖКА</div><div class="fc-val">Центр помощи</div></div>
-        <div class="footer-card red-card"><div class="fc-cap">АККАУНТ</div><div class="fc-val red">Выйти</div></div>
+        <div class="footer-card"><div class="fc-cap">Поддержка</div><div class="fc-val">Центр помощи</div></div>
+        <div class="footer-card red-card"><div class="fc-cap">Аккаунт</div><div class="fc-val red">Выйти</div></div>
       </div>
     </div>
 
-    <!-- ═══ НАВИГАЦИЯ ═══ -->
     <nav class="bottom-nav">
       <div class="nav-pill">
         <button class="nav-tab active" data-page="home" id="tab-home"><div class="tab-icon home-icon"></div><span>РЫНОК</span></button>
-        <button class="nav-tab" data-page="stats"    id="tab-stats"><div class="tab-icon stats-icon"><span></span><span></span><span></span></div><span>СТАТС</span></button>
-        <button class="nav-tab" data-page="profile"  id="tab-profile"><div class="tab-icon profile-icon"><div class="pi-head"></div></div><span>ПРОФИЛЬ</span></button>
+        <button class="nav-tab" data-page="stats" id="tab-stats"><div class="tab-icon stats-icon"><span></span><span></span><span></span></div><span>СТАТС</span></button>
+        <button class="nav-tab" data-page="profile" id="tab-profile"><div class="tab-icon profile-icon"><div class="pi-head"></div></div><span>ПРОФИЛЬ</span></button>
         <button class="nav-tab" data-page="settings" id="tab-settings"><div class="tab-icon settings-icon"><div class="si-dot"></div></div><span>НАСТР</span></button>
       </div>
     </nav>
+  </div>
 
-  </div><!-- /main-app -->
-
-  <!-- ═══ ОВЕРЛЕЙ — вне main-app, чтобы fixed работал ═══ -->
   <div id="modal-overlay" class="modal-overlay" onclick="closeBetModal()" aria-hidden="true"></div>
 
-  <!-- ═══ МОДАЛ СТАВКИ — вне main-app ═══ -->
   <div id="bet-modal" class="bet-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="bm-dir-title">
     <div class="bm-handle"></div>
 
@@ -205,7 +219,7 @@
       <span id="bm-dir-arrow" class="bm-dir-arrow">↑</span>
       <div class="bm-dir-text">
         <div id="bm-dir-title" class="bm-dir-title">РОСТ</div>
-        <div class="bm-dir-sub"><span id="bm-symbol">BTC/USDT</span> &nbsp;·&nbsp; <span id="bm-price">—</span></div>
+        <div class="bm-dir-sub"><span id="bm-symbol">BTC/USDT</span> · <span id="bm-price">—</span></div>
       </div>
       <span id="bm-change" class="bm-change-badge neutral">0.00%</span>
     </div>
@@ -235,7 +249,7 @@
     </button>
   </div>
 
-</div><!-- /app -->
+</div>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="/static/js/app.js?v={{ asset_version }}"></script>

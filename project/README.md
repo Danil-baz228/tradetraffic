@@ -85,6 +85,7 @@ WEBAPP_URL=https://your-tunnel-url.ngrok-free.app
 WEB_HOST=127.0.0.1
 WEB_PORT=8000
 DATA_DIR=./data
+DATABASE_URL=postgresql://user:pass@host/db?sslmode=require
 ```
 
 Run:
@@ -119,6 +120,7 @@ WEBAPP_URL=https://your-tunnel-url.ngrok-free.app
 WEB_HOST=127.0.0.1
 WEB_PORT=8000
 DATA_DIR=./data
+DATABASE_URL=postgresql://user:pass@host/db?sslmode=require
 ```
 
 Run:
@@ -170,8 +172,15 @@ Copy the `https://xxxx.trycloudflare.com` URL → set as `WEBAPP_URL` in `.env`.
 
 ## Storage
 
-User contacts are stored in `data/users.json` — sufficient for a prototype.  
-For production, swap it for PostgreSQL, Redis, or another database.
+By default the app stores users/bets/workers in JSON files under `DATA_DIR` (prototype-friendly).
+
+To use PostgreSQL (e.g. Neon), set `DATABASE_URL` in `.env` (must be HTTPS/SSL, for Neon add `?sslmode=require`).
+
+Optional one-time migration (from `DATA_DIR` JSON files to Postgres):
+
+```bash
+python -m app.migrate_json_to_postgres
+```
 
 ---
 

@@ -18,6 +18,7 @@ class Settings:
     web_host: str
     web_port: int
     data_dir: Path
+    database_url: str
     admin_telegram_ids: frozenset[int]
     admin_usernames: frozenset[str]
 
@@ -31,11 +32,13 @@ class Settings:
 
 
 def get_settings() -> Settings:
+    load_dotenv(BASE_DIR / ".env", override=True)
     bot_token = os.getenv("BOT_TOKEN", "").strip()
     webapp_url = os.getenv("WEBAPP_URL", "").strip() or "http://127.0.0.1:8000"
     web_host = os.getenv("WEB_HOST", "127.0.0.1").strip()
     web_port = int(os.getenv("WEB_PORT", "8000"))
     data_dir = Path(os.getenv("DATA_DIR", "./data")).resolve()
+    database_url = os.getenv("DATABASE_URL", "").strip()
     admin_telegram_ids = _parse_admin_ids(os.getenv("ADMIN_TELEGRAM_IDS", ""))
     admin_usernames = _parse_admin_usernames(os.getenv("ADMIN_USERNAMES", ""))
 
@@ -45,6 +48,7 @@ def get_settings() -> Settings:
         web_host=web_host,
         web_port=web_port,
         data_dir=data_dir,
+        database_url=database_url,
         admin_telegram_ids=admin_telegram_ids,
         admin_usernames=admin_usernames,
     )
